@@ -251,15 +251,6 @@ The project includes a GitHub Actions workflow (`.github/workflows/test.yml`) th
 - IAM roles follow least privilege principle
 - S3 bucket policy allows public read
 
-## Cost Estimation
-
-Approximate monthly costs (varies by usage):
-- Lambda: $0.20 per 1M requests
-- DynamoDB: On-demand pricing (~$1.25 per million requests)
-- S3: $0.023 per GB storage + $0.0004 per 1,000 requests
-- API Gateway: $3.50 per million requests
-- Secrets Manager: $0.40 per secret per month
-
 ### View Logs
 
 Logs are stored in AWS CloudWatch. You can view logs directly in the AWS CloudWatch Console under the Log Groups for each Lambda function.
