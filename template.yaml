@@ -1,6 +1,12 @@
 AWSTemplateFormatVersion: "2010-09-09"
 Transform: AWS::Serverless-2016-10-31
 
+Parameters:
+  ApiKeySecretName:
+    Type: String
+    Default: ads-api/api-key
+    Description: Name of the secret in AWS Secrets Manager
+
 Resources:
   AdsApi:
     Type: AWS::Serverless::Api
@@ -93,12 +99,18 @@ Resources:
         Variables:
           ADS_TABLE: !Ref AdsTable
           IMAGES_BUCKET: !Ref AdsImagesBucket
-          API_KEY: ule5G4q84TUkbtOx07RF3w5zQgtqu4AN
+          API_KEY_SECRET_NAME: !Ref ApiKeySecretName
       Policies:
         - DynamoDBCrudPolicy:
             TableName: !Ref AdsTable
         - S3WritePolicy:
             BucketName: !Ref AdsImagesBucket
+        - Version: '2012-10-17'
+          Statement:
+            - Effect: Allow
+              Action:
+                - secretsmanager:GetSecretValue
+              Resource: !Sub 'arn:aws:secretsmanager:${AWS::Region}:${AWS::AccountId}:secret:${ApiKeySecretName}*'
       Events:
         CreateAd:
           Type: Api
@@ -127,10 +139,16 @@ Resources:
       Environment:
         Variables:
           ADS_TABLE: !Ref AdsTable
-          API_KEY: ule5G4q84TUkbtOx07RF3w5zQgtqu4AN
+          API_KEY_SECRET_NAME: !Ref ApiKeySecretName
       Policies:
         - DynamoDBCrudPolicy:
             TableName: !Ref AdsTable
+        - Version: '2012-10-17'
+          Statement:
+            - Effect: Allow
+              Action:
+                - secretsmanager:GetSecretValue
+              Resource: !Sub 'arn:aws:secretsmanager:${AWS::Region}:${AWS::AccountId}:secret:${ApiKeySecretName}*'
       Events:
         GetAllAds:
           Type: Api
@@ -159,10 +177,16 @@ Resources:
       Environment:
         Variables:
           ADS_TABLE: !Ref AdsTable
-          API_KEY: ule5G4q84TUkbtOx07RF3w5zQgtqu4AN
+          API_KEY_SECRET_NAME: !Ref ApiKeySecretName
       Policies:
         - DynamoDBCrudPolicy:
             TableName: !Ref AdsTable
+        - Version: '2012-10-17'
+          Statement:
+            - Effect: Allow
+              Action:
+                - secretsmanager:GetSecretValue
+              Resource: !Sub 'arn:aws:secretsmanager:${AWS::Region}:${AWS::AccountId}:secret:${ApiKeySecretName}*'
       Events:
         DeleteAd:
           Type: Api
