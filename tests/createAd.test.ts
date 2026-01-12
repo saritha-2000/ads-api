@@ -2,11 +2,14 @@ import { handler } from "../src/handlers/createAd";
 import { APIGatewayProxyResult } from "aws-lambda";
 import { putAd } from "../src/services/dynamo";
 import { uploadImage } from "../src/services/s3";
+import { isAuthorized } from "../src/utils/auth";
 
 jest.mock("../src/services/dynamo");
 jest.mock("../src/services/s3");
+jest.mock("../src/utils/auth");
 
 test("returns 401 when api key missing", async () => {
+  (isAuthorized as jest.Mock).mockResolvedValue(false);
   const event = { headers: {}, body: "{}" } as any;
   const context = {} as any;
   const callback = () => {};
@@ -17,6 +20,7 @@ test("returns 401 when api key missing", async () => {
 });
 
 test("returns 201 when ad created successfully", async () => {
+  (isAuthorized as jest.Mock).mockResolvedValue(true);
   (putAd as jest.Mock).mockResolvedValue(undefined);
 
   const event = {
@@ -46,6 +50,7 @@ test("returns 201 when ad created successfully", async () => {
 });
 
 test("returns 201 when ad created successfully with image", async () => {
+  (isAuthorized as jest.Mock).mockResolvedValue(true);
   (putAd as jest.Mock).mockResolvedValue(undefined);
   (uploadImage as jest.Mock).mockResolvedValue("https://example.com/image.jpg");
 

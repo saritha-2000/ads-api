@@ -1,10 +1,13 @@
 import { handler } from "../src/handlers/getAllAds";
 import { APIGatewayProxyResult } from "aws-lambda";
 import { getAllAds } from "../src/services/dynamo";
+import { isAuthorized } from "../src/utils/auth";
 
 jest.mock("../src/services/dynamo");
+jest.mock("../src/utils/auth");
 
 test("returns 401 when api key missing", async () => {
+  (isAuthorized as jest.Mock).mockResolvedValue(false);
   const event = { headers: {} } as any;
   const context = {} as any;
   const callback = () => {};
@@ -15,6 +18,7 @@ test("returns 401 when api key missing", async () => {
 });
 
 test("returns 200 with ads when authorized", async () => {
+  (isAuthorized as jest.Mock).mockResolvedValue(true);
   const mockAds = [
     {
       adId: "123",
