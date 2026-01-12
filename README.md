@@ -228,6 +228,8 @@ The project includes a GitHub Actions workflow (`.github/workflows/test.yml`) th
 - Runs unit tests
 - Validates TypeScript compilation
 
+**Note**: The workflow pipeline accesses the `API_KEY` from GitHub repository secrets configured in repository settings.
+
 ## Known Issues and Limitations
 
 1. **Image Format**: Images are accepted as base64-encoded strings and stored in S3 with `.jpg` extension. The API does not validate the actual image format - any base64 string will be decoded and stored as JPEG.
