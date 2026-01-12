@@ -15,8 +15,7 @@ export const handler: APIGatewayProxyHandler = async (event, context) => {
   const body = JSON.parse(event.body || "{}");
   const { title, price, imageBase64 } = body;
 
-  // title must be at least 3 chars, price must be non negative
-  if (!title || title.length < 3 || price < 0) {
+  if (!title || title.length < 3 || typeof price !== 'number' || price < 0) {
     return { statusCode: 400, body: "Invalid input" };
   }
 
