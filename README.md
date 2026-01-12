@@ -168,7 +168,11 @@ The deployment will create:
 
 Below are screenshots demonstrating testing endpoints in postman
 
+<img width="1361" height="761" alt="Screenshot 2026-01-13 at 01 51 42" src="https://github.com/user-attachments/assets/8f080a33-a81b-4f2b-8aca-b678ed6cd0ad" />
 
+<img width="1361" height="789" alt="Screenshot 2026-01-13 at 01 52 13" src="https://github.com/user-attachments/assets/e66831a2-a8b7-48c1-837f-830b392673dd" />
+
+<img width="1361" height="789" alt="Screenshot 2026-01-13 at 01 52 29" src="https://github.com/user-attachments/assets/f2e0d859-96bd-40ce-9299-ad3b767e888d" />
 
 ## Running Unit Tests
 
