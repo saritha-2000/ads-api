@@ -112,7 +112,7 @@ The deployment will create:
 - `x-api-key`: It's in the env file as well as in the postman json export
 
 ### POST /ads
-- https://ity25v0f5a.execute-api.us-east-1.amazonaws.com/Prod/ads
+- https://ip0qkma8k9.execute-api.ap-south-1.amazonaws.com/Prod/ads
 
 **Request Body:**
 ```json
@@ -136,7 +136,7 @@ The deployment will create:
 ```
 
 ### GET /ads
-- https://ity25v0f5a.execute-api.us-east-1.amazonaws.com/Prod/ads
+- https://ip0qkma8k9.execute-api.ap-south-1.amazonaws.com/Prod/ads
 
 **Response (200 OK):**
 ```json
@@ -152,7 +152,7 @@ The deployment will create:
 ```
 
 ### DELETE /ads/{adId}
-- https://ity25v0f5a.execute-api.us-east-1.amazonaws.com/Prod/ads/{adId}
+- https://ip0qkma8k9.execute-api.ap-south-1.amazonaws.com/Prod/ads/{adId}
 
 **Path Parameters:**
 - `adId`: Advertisement ID (required)
