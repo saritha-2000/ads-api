@@ -204,9 +204,8 @@ npm test -- --coverage
 This will:
 - Run all tests
 - Generate a coverage report showing:
-- Create a `coverage/` directory with detailed HTML reports
 
-The coverage report will be displayed in the terminal and also generated as HTML files in the `coverage/` directory. You can open `coverage/lcov-report/index.html` in your browser to view a detailed, interactive coverage report with visual indicators.
+<img width="591" height="290" alt="Screenshot 2026-01-13 at 01 35 34" src="https://github.com/user-attachments/assets/5e86ab9f-0755-42a4-9e6b-22fb569ff1ce" />
 
 **Output:**
 
@@ -223,7 +222,6 @@ npm test
 ```bash
 npm run build
 ```
-
 
 ## GitHub Actions Workflow
 
@@ -265,7 +263,6 @@ The implementation includes additional features beyond the basic requirements:
 - ✅ Comprehensive unit test coverage
 - ✅ TypeScript type safety throughout
 - ✅ Structured logging with request IDs
-
 
 ## Author
 
