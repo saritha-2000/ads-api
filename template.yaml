@@ -1,0 +1,208 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Transform: AWS::Serverless-2016-10-31
+
+Resources:
+  AdsApi:
+    Type: AWS::Serverless::Api
+    Properties:
+      StageName: Prod
+      DefinitionBody:
+        swagger: "2.0"
+        info:
+          title: ad-app
+          version: "1.0"
+        paths:
+          /ads:
+            get:
+              parameters:
+                - name: x-api-key
+                  in: header
+                  required: true
+                  type: string
+              responses: {}
+              x-amazon-apigateway-integration:
+                type: aws_proxy
+                httpMethod: POST
+                uri: !Sub arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${GetAllAdsFunction.Arn}/invocations
+            post:
+              parameters:
+                - name: x-api-key
+                  in: header
+                  required: true
+                  type: string
+                - name: body
+                  in: body
+                  required: true
+                  schema:
+                    $ref: "#/definitions/CreateAdRequest"
+              responses: {}
+              x-amazon-apigateway-integration:
+                type: aws_proxy
+                httpMethod: POST
+                uri: !Sub arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${AdsFunction.Arn}/invocations
+          /ads/{adId}:
+            delete:
+              parameters:
+                - name: x-api-key
+                  in: header
+                  required: true
+                  type: string
+                - name: adId
+                  in: path
+                  required: true
+                  type: string
+              responses: {}
+              x-amazon-apigateway-integration:
+                type: aws_proxy
+                httpMethod: POST
+                uri: !Sub arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${DeleteAdFunction.Arn}/invocations
+        definitions:
+          CreateAdRequest:
+            type: object
+            required:
+              - title
+              - price
+            properties:
+              title:
+                type: string
+                minLength: 3
+              price:
+                type: number
+                minimum: 0
+              imageBase64:
+                type: string
+
+  # lambda function to create ads
+  AdsFunction:
+    Type: AWS::Serverless::Function
+    Metadata:
+      BuildMethod: esbuild
+      BuildProperties:
+        Minify: false
+        Target: es2020
+        Sourcemap: false
+        EntryPoints:
+          - src/handlers/createAd.ts
+    Properties:
+      Runtime: nodejs18.x
+      Handler: createAd.handler
+      CodeUri: .
+      MemorySize: 512
+      Timeout: 30
+      Environment:
+        Variables:
+          ADS_TABLE: !Ref AdsTable
+          IMAGES_BUCKET: !Ref AdsImagesBucket
+          API_KEY: ule5G4q84TUkbtOx07RF3w5zQgtqu4AN
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName: !Ref AdsTable
+        - S3WritePolicy:
+            BucketName: !Ref AdsImagesBucket
+      Events:
+        CreateAd:
+          Type: Api
+          Properties:
+            RestApiId: !Ref AdsApi
+            Path: /ads
+            Method: post
+
+  # lambda function to get all ads
+  GetAllAdsFunction:
+    Type: AWS::Serverless::Function
+    Metadata:
+      BuildMethod: esbuild
+      BuildProperties:
+        Minify: false
+        Target: es2020
+        Sourcemap: false
+        EntryPoints:
+          - src/handlers/getAllAds.ts
+    Properties:
+      Runtime: nodejs18.x
+      Handler: getAllAds.handler
+      CodeUri: .
+      MemorySize: 512
+      Timeout: 30
+      Environment:
+        Variables:
+          ADS_TABLE: !Ref AdsTable
+          API_KEY: ule5G4q84TUkbtOx07RF3w5zQgtqu4AN
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName: !Ref AdsTable
+      Events:
+        GetAllAds:
+          Type: Api
+          Properties:
+            RestApiId: !Ref AdsApi
+            Path: /ads
+            Method: get
+
+  # lambda function to delete ads
+  DeleteAdFunction:
+    Type: AWS::Serverless::Function
+    Metadata:
+      BuildMethod: esbuild
+      BuildProperties:
+        Minify: false
+        Target: es2020
+        Sourcemap: false
+        EntryPoints:
+          - src/handlers/deleteAd.ts
+    Properties:
+      Runtime: nodejs18.x
+      Handler: deleteAd.handler
+      CodeUri: .
+      MemorySize: 512
+      Timeout: 30
+      Environment:
+        Variables:
+          ADS_TABLE: !Ref AdsTable
+          API_KEY: ule5G4q84TUkbtOx07RF3w5zQgtqu4AN
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName: !Ref AdsTable
+      Events:
+        DeleteAd:
+          Type: Api
+          Properties:
+            RestApiId: !Ref AdsApi
+            Path: /ads/{adId}
+            Method: delete
+
+  # dynamodb table for storing ads
+  AdsTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      BillingMode: PAY_PER_REQUEST
+      AttributeDefinitions:
+        - AttributeName: adId
+          AttributeType: S
+      KeySchema:
+        - AttributeName: adId
+          KeyType: HASH
+
+  # s3 bucket for storing ad images
+  AdsImagesBucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: !Sub "${AWS::StackName}-ads-images"
+      PublicAccessBlockConfiguration:
+        BlockPublicAcls: false
+        BlockPublicPolicy: false
+        IgnorePublicAcls: false
+        RestrictPublicBuckets: false
+
+  # s3 bucket policy to allow public read access
+  AdsImagesBucketPolicy:
+    Type: AWS::S3::BucketPolicy
+    Properties:
+      Bucket: !Ref AdsImagesBucket
+      PolicyDocument:
+        Statement:
+          - Sid: PublicReadGetObject
+            Effect: Allow
+            Principal: '*'
+            Action: 's3:GetObject'
+            Resource: !Sub '${AdsImagesBucket.Arn}/*'
