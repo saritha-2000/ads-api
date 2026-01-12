@@ -238,7 +238,7 @@ The project includes a GitHub Actions workflow (`.github/workflows/test.yml`) th
 
 3. **Rate Limiting**: No rate limiting is implemented.
 
-4. **CORS**: CORS is not configured. Add CORS headers if accessing from web browsers.
+4. **CORS**: CORS is not configured.
 
 5. **Image Size**: No validation for image size. Consider adding limits to prevent large uploads.
 
