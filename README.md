@@ -164,6 +164,12 @@ The deployment will create:
 }
 ```
 
+## Postman Examples
+
+Below are screenshots demonstrating testing endpoints in postman
+
+
+
 ## Running Unit Tests
 
 Add provided .env file to the repository
@@ -205,23 +211,10 @@ This will:
 - Run all tests
 - Generate a coverage report showing:
 
-<img width="591" height="290" alt="Screenshot 2026-01-13 at 01 35 34" src="https://github.com/user-attachments/assets/5e86ab9f-0755-42a4-9e6b-22fb569ff1ce" />
-
 **Output:**
 
-## Local Development
+<img width="591" height="290" alt="Screenshot 2026-01-13 at 01 35 34" src="https://github.com/user-attachments/assets/5e86ab9f-0755-42a4-9e6b-22fb569ff1ce" />
 
-### Run Tests Locally
-
-```bash
-npm test
-```
-
-### Build TypeScript
-
-```bash
-npm run build
-```
 
 ## GitHub Actions Workflow
 
@@ -233,7 +226,7 @@ The project includes a GitHub Actions workflow (`.github/workflows/test.yml`) th
 
 ## Known Issues and Limitations
 
-1. **Image Format**: Currently supports JPEG images only. Images are automatically converted and stored as `.jpg` files.
+1. **Image Format**: Images are accepted as base64-encoded strings and stored in S3 with `.jpg` extension. The API does not validate the actual image format - any base64 string will be decoded and stored as JPEG.
 
 2. **S3 Bucket**: The bucket is configured for public read access. Ensure this aligns with your security requirements.
 
@@ -257,12 +250,9 @@ Logs are stored in AWS CloudWatch. You can view logs directly in the AWS CloudWa
 
 The implementation includes additional features beyond the basic requirements:
 
-- ✅ GET /ads endpoint to retrieve all ads
-- ✅ DELETE /ads/{adId} endpoint to delete ads
-- ✅ AWS Secrets Manager integration for secure API key storage
-- ✅ Comprehensive unit test coverage
-- ✅ TypeScript type safety throughout
-- ✅ Structured logging with request IDs
+- GET /ads endpoint to retrieve all ads
+- DELETE /ads/{adId} endpoint to delete ads
+- AWS Secrets Manager integration for secure API key storage
 
 ## Author
 
